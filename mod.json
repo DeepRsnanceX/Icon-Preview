@@ -1,0 +1,14 @@
+{
+	"geode": "4.2.0",
+	"gd": {
+		"win": "2.2074",
+		"android": "2.2074",
+		"mac": "2.2074",
+		"ios": "2.2074"
+	},
+	"id": "saritahhh.icon_preview",
+	"name": "Icon Preview",
+	"version": "v1.0.0",
+	"developer": "Saritahhh",
+	"description": "Previews the icon position in the garage"
+}

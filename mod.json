@@ -11,6 +11,12 @@
 			"resources/*.png"
 		]
 	},
+	"dependencies": {
+        "hiimjustin000.more_icons": {
+            "version": ">=v1.13.0",
+            "importance": "suggested"
+        }
+    },
 	"id": "saritahhh.icon_preview",
 	"name": "Icon Preview",
 	"version": "v1.0.0",

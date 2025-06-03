@@ -2,7 +2,7 @@
 
 using namespace geode::prelude;
 
-class $modify(MyGarageLayer, GJGarageLayer){
+class $modify(IPGarageLayer, GJGarageLayer){
     struct Fields {
         CCSprite* m_cubePreview = CCSprite::create("icon.png"_spr);
         CCSprite* m_guide = CCSprite::create("guide.png"_spr);
@@ -13,7 +13,10 @@ class $modify(MyGarageLayer, GJGarageLayer){
 
         auto fields = m_fields.self();
 
-        fields->m_cubePreview->setPosition({284.4f, 251.f});
+        float posX = m_playerObject->getPositionX();
+        float posY = m_playerObject->getPositionY();
+
+        fields->m_cubePreview->setPosition({posX, posY});
         fields->m_cubePreview->setScale(0.88f);
         
         this->addChild(fields->m_cubePreview, -2);
@@ -21,16 +24,22 @@ class $modify(MyGarageLayer, GJGarageLayer){
         return true;
     }
 
-    void onSelect(CCObject* sender) {
-        GJGarageLayer::onSelect(sender);
+    void onSelect(CCObject* iconSender) {
+        GJGarageLayer::onSelect(iconSender);
+
+        geode::log::debug("an icon was selected");
 
         auto fields = m_fields.self();
 
+        float globalPosX = m_playerObject->getPositionX();
+        float shipPosY = m_playerObject->getPositionY() + 16.f;
+        float ufoPosY = m_playerObject->getPositionY() + 8.5f;
+
         auto moveToShipPos = CCEaseBackInOut::create(
-            CCMoveTo::create(0.3f, {284.4f, 251.f})
+            CCMoveTo::create(0.3f, {globalPosX, shipPosY})
         );
         auto moveToUfoPos = CCEaseBackInOut::create(
-            CCMoveTo::create(0.3f, {284.4f, 243.5f})
+            CCMoveTo::create(0.3f, {globalPosX, ufoPosY})
         );
 
         if (m_selectedIconType == IconType::Ship || m_selectedIconType == IconType::Ufo) {
@@ -44,10 +53,7 @@ class $modify(MyGarageLayer, GJGarageLayer){
         } else if (m_selectedIconType == IconType::Ufo) {
             fields->m_cubePreview->runAction(moveToUfoPos);
         }
-    }
 
-	void selectTab(IconType p0){
-        GJGarageLayer::selectTab(p0);
-        
     }
+    
 };

@@ -5,7 +5,6 @@ using namespace geode::prelude;
 class $modify(IPGarageLayer, GJGarageLayer){
     struct Fields {
         CCSprite* m_cubePreview = CCSprite::create("icon.png"_spr);
-        CCSprite* m_guide = CCSprite::create("guide.png"_spr);
     };
 
     bool init() {

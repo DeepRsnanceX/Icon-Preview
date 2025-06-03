@@ -6,11 +6,6 @@
 		"mac": "2.2074",
 		"ios": "2.2074"
 	},
-	"resources": {
-		"sprites": [
-			"resources/*.png"
-		]
-	},
 	"dependencies": {
         "hiimjustin000.more_icons": {
             "version": ">=v1.13.0",

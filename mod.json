@@ -6,6 +6,13 @@
 		"mac": "2.2074",
 		"ios": "2.2074"
 	},
+	"settings": {
+		"glow-fix": {
+			"type": "bool",
+			"default": true,
+			"description": "Does some silly stuff to fix the Ship/UFO glow overlaying the entire cube in the garage, making it look more accurate to in-game."
+		}
+	},
 	"dependencies": {
         "hiimjustin000.more_icons": {
             "version": ">=v1.13.0",

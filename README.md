@@ -1,5 +1,7 @@
 # Icon Preview
 
+<img src="logo.png" width="250" alt="Icon Preview mod logo">
+
 This mod lets you preview how your **Cube** icon will look like in-game on top of your chosen ***Ship*** and ***UFO***!
 To preview, simply enter the ***Icon Garage***, your selected cube will automatically show up in its position when you select a Ship/UFO icon!
 

@@ -17,7 +17,7 @@ $on_mod(Loaded) {
 class $modify(IPGarageLayer, GJGarageLayer){
     struct Fields {
         SimplePlayer* m_previewPlayer = SimplePlayer::create(0);
-        SimplePlayer* m_secondPreview = SimplePlayer::create(0);
+        SimplePlayer* m_secondPreview = SimplePlayer::create(0); //xdd
         SimplePlayer* fakeGlowDisplay = SimplePlayer::create(0);
     };
 

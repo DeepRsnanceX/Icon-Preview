@@ -11,7 +11,7 @@
 			"type": "bool",
 			"name": "Glow Layering Fix",
 			"default": true,
-			"description": "Does some silly stuff to fix the Ship/UFO glow overlaying the entire cube in the garage, making it look more accurate to in-game. \n\n<cr>Disable if you encounter any issues with icon coloring, layering or similar.</c>"
+			"description": "Does some silly stuff to fix the Ship/UFO glow overlaying the entire cube in the garage, making it look more accurate to in-game. \n\n<cr>Shouldn't cause any issues, but disable if you encounter any with icon coloring, layering or similar.</c>"
 		}
 	},
 	"dependencies": {
@@ -24,5 +24,5 @@
 	"name": "Icon Preview",
 	"version": "v1.0.0",
 	"developer": "Saritahhh",
-	"description": "Previews the icon position in the garage"
+	"description": "Preview your cube's position in the garage!"
 }

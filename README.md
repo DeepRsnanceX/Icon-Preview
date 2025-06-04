@@ -1,23 +1,11 @@
-# IconPreview
-This is where she makes a mod.
+# Icon Preview
 
-<img src="logo.png" width="150" alt="the mod's logo" />
+This mod lets you preview how your **Cube** icon will look like in-game on top of your chosen ***Ship*** and ***UFO***!
+To preview, simply enter the ***Icon Garage***, your selected cube will automatically show up in its position when you select a Ship/UFO icon!
 
-*Update logo.png to change your mod's icon (please)*
+By default, this mod does some funny stuff to ensure proper layering if ***Glow*** is enabled. If this causes any issues, this behavior can be disabled in the mod's settings page!
 
-## Getting started
-We recommend heading over to [the getting started section on our docs](https://docs.geode-sdk.org/getting-started/) for useful info on what to do next.
-
-## Build instructions
-For more info, see [our docs](https://docs.geode-sdk.org/getting-started/create-mod#build)
-```sh
-# Assuming you have the Geode CLI set up already
-geode build
-```
-
-# Resources
-* [Geode SDK Documentation](https://docs.geode-sdk.org/)
-* [Geode SDK Source Code](https://github.com/geode-sdk/geode/)
-* [Geode CLI](https://github.com/geode-sdk/cli)
-* [Bindings](https://github.com/geode-sdk/bindings/)
-* [Dev Tools](https://github.com/geode-sdk/DevTools)
+## Compatibility with other Icon Mods
+- **More Icons**: Should be completely compatible and functional!
+- **Fine Outline**: Works, but cube won't have the custom outline color.
+- **Separate Dual Icons**: Cube preview will only exist for Player 1. Proper compat planned in a future update!

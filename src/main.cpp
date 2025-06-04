@@ -24,6 +24,65 @@ class $modify(IPGarageLayer, GJGarageLayer){
         (void) self.setHookPriorityBeforePre("GJGarageLayer::onSelect", "hiimjustin000.more_icons");
     }
 
+    void updatePlayerColors() {
+        GJGarageLayer::updatePlayerColors();
+        // THANK FUCKING GOD FOR THIS FUNCTION I DON'T HAVE TO DO A BUNCH OF SHIT TO UPDATE ON PALETTE-MENU-THINGY-WHATEVER CLOSING :yas:
+
+        auto fields = m_fields.self();
+        auto manager = GameManager::sharedState();
+
+        fields->m_previewPlayer->updatePlayerFrame(manager->getPlayerFrame(), IconType::Cube);
+        MoreIcons::updateSimplePlayer(fields->m_previewPlayer, IconType::Cube);
+        fields->m_previewPlayer->setColor(manager->colorForIdx(manager->getPlayerColor()));
+        fields->m_previewPlayer->setSecondColor(manager->colorForIdx(manager->getPlayerColor2()));
+        fields->m_previewPlayer->setGlowOutline(manager->colorForIdx(manager->getPlayerGlowColor()));
+        fields->m_previewPlayer->enableCustomGlowColor(manager->colorForIdx(manager->getPlayerGlowColor()));
+        if (!manager->getPlayerGlow()) {
+            fields->m_previewPlayer->disableGlowOutline();
+        }
+
+        if (doGlowFix) {
+            fields->fakeGlowDisplay->m_firstLayer->setVisible(false);
+            fields->fakeGlowDisplay->m_secondLayer->setVisible(false);
+            fields->fakeGlowDisplay->m_birdDome->setVisible(false);
+            fields->fakeGlowDisplay->m_detailSprite->setVisible(false);
+
+            if (m_selectedIconType == IconType::Ship || m_selectedIconType == IconType::Ufo) {
+                if (manager->getPlayerGlow()) {
+                    fields->fakeGlowDisplay->setVisible(true);
+                    fields->fakeGlowDisplay->m_outlineSprite->setVisible(true);
+                    m_playerObject->m_outlineSprite->setVisible(false);
+                }
+            } else {
+                fields->fakeGlowDisplay->setVisible(false);
+                m_playerObject->m_outlineSprite->setVisible(manager->getPlayerGlow());
+            }
+
+            if (m_selectedIconType == IconType::Ship) {
+                fields->fakeGlowDisplay->updatePlayerFrame(manager->getPlayerShip(), IconType::Ship);
+                MoreIcons::updateSimplePlayer(fields->fakeGlowDisplay, IconType::Ship);
+                fields->fakeGlowDisplay->setColor(manager->colorForIdx(manager->getPlayerColor()));
+                fields->fakeGlowDisplay->setSecondColor(manager->colorForIdx(manager->getPlayerColor2()));
+                fields->fakeGlowDisplay->setGlowOutline(manager->colorForIdx(manager->getPlayerGlowColor()));
+                fields->fakeGlowDisplay->enableCustomGlowColor(manager->colorForIdx(manager->getPlayerGlowColor()));
+                if (!manager->getPlayerGlow()) {
+                    fields->fakeGlowDisplay->disableGlowOutline();
+                }
+            } else if (m_selectedIconType == IconType::Ufo) {
+                fields->fakeGlowDisplay->updatePlayerFrame(manager->getPlayerBird(), IconType::Ufo);
+                MoreIcons::updateSimplePlayer(fields->fakeGlowDisplay, IconType::Ufo);
+                fields->fakeGlowDisplay->setColor(manager->colorForIdx(manager->getPlayerColor()));
+                fields->fakeGlowDisplay->setSecondColor(manager->colorForIdx(manager->getPlayerColor2()));
+                fields->fakeGlowDisplay->setGlowOutline(manager->colorForIdx(manager->getPlayerGlowColor()));
+                fields->fakeGlowDisplay->enableCustomGlowColor(manager->colorForIdx(manager->getPlayerGlowColor()));
+                if (!manager->getPlayerGlow()) {
+                    fields->fakeGlowDisplay->disableGlowOutline();
+                }
+            }
+        }
+
+    }
+
     bool init() {
         if (!GJGarageLayer::init()) return false;
 

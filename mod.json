@@ -9,8 +9,9 @@
 	"settings": {
 		"glow-fix": {
 			"type": "bool",
+			"name": "Glow Layering Fix",
 			"default": true,
-			"description": "Does some silly stuff to fix the Ship/UFO glow overlaying the entire cube in the garage, making it look more accurate to in-game."
+			"description": "Does some silly stuff to fix the Ship/UFO glow overlaying the entire cube in the garage, making it look more accurate to in-game. \n\nDisable if you encounter any issues with icon coloring, layering or similar."
 		}
 	},
 	"dependencies": {

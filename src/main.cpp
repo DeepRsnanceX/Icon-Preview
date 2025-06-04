@@ -183,6 +183,10 @@ class $modify(IPGarageLayer, GJGarageLayer){
         auto fields = m_fields.self();
         auto manager = GameManager::sharedState();
 
+        auto lastIcon = manager->m_playerIconType;
+        bool dontHideOnSpecials = m_selectedIconType == IconType::Special || m_selectedIconType == IconType::DeathEffect || m_selectedIconType == IconType::ShipFire;
+        bool validLastIcon = lastIcon == IconType::Ship || lastIcon == IconType::Ufo;
+
         float globalPosX = m_playerObject->getPositionX();
         float globalPosY = m_playerObject->getPositionY();
         float shipPosY = m_playerObject->getPositionY() + 16.f;
@@ -234,6 +238,12 @@ class $modify(IPGarageLayer, GJGarageLayer){
                     fields->fakeGlowDisplay->m_outlineSprite->setVisible(true);
                     m_playerObject->m_outlineSprite->setVisible(false);
                 }
+            } else if (dontHideOnSpecials && validLastIcon) {
+                if (manager->getPlayerGlow()) {
+                    fields->fakeGlowDisplay->setVisible(true);
+                    fields->fakeGlowDisplay->m_outlineSprite->setVisible(true);
+                    m_playerObject->m_outlineSprite->setVisible(false);
+                }
             } else {
                 fields->fakeGlowDisplay->setVisible(false);
                 m_playerObject->m_outlineSprite->setVisible(manager->getPlayerGlow());
@@ -249,7 +259,9 @@ class $modify(IPGarageLayer, GJGarageLayer){
         );
 
         if (m_selectedIconType == IconType::Ship || m_selectedIconType == IconType::Ufo) {
-            fields->m_previewPlayer->setVisible(true);  
+            fields->m_previewPlayer->setVisible(true);
+        } else if (dontHideOnSpecials && validLastIcon) {
+            fields->m_previewPlayer->setVisible(true);
         } else {
             fields->m_previewPlayer->setVisible(false);
         }

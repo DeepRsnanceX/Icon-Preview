@@ -11,3 +11,5 @@ By default, this mod does some funny stuff to ensure proper layering if ***Glow*
 - **More Icons**: Should be completely compatible and functional!
 - **Fine Outline**: Works, but cube won't have the custom outline color.
 - **Separate Dual Icons**: Cube preview will only exist for Player 1. Proper compat *(maybe)* planned in a future update!
+
+*Preview on jetpack is planned too, btw. Don't worry.*

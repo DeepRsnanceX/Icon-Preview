@@ -31,6 +31,7 @@ class $modify(IPGarageLayer, GJGarageLayer){
 
         auto fields = m_fields.self();
         auto manager = GameManager::sharedState();
+        auto lastChosenIcon = manager->m_playerIconType;
 
         fields->m_previewPlayer->updatePlayerFrame(manager->getPlayerFrame(), IconType::Cube);
         MoreIcons::updateSimplePlayer(fields->m_previewPlayer, IconType::Cube);
@@ -43,23 +44,8 @@ class $modify(IPGarageLayer, GJGarageLayer){
         }
 
         if (doGlowFix) {
-            fields->fakeGlowDisplay->m_firstLayer->setVisible(false);
-            fields->fakeGlowDisplay->m_secondLayer->setVisible(false);
-            fields->fakeGlowDisplay->m_birdDome->setVisible(false);
-            fields->fakeGlowDisplay->m_detailSprite->setVisible(false);
 
-            if (m_selectedIconType == IconType::Ship || m_selectedIconType == IconType::Ufo) {
-                if (manager->getPlayerGlow()) {
-                    fields->fakeGlowDisplay->setVisible(true);
-                    fields->fakeGlowDisplay->m_outlineSprite->setVisible(true);
-                    m_playerObject->m_outlineSprite->setVisible(false);
-                }
-            } else {
-                fields->fakeGlowDisplay->setVisible(false);
-                m_playerObject->m_outlineSprite->setVisible(manager->getPlayerGlow());
-            }
-
-            if (m_selectedIconType == IconType::Ship) {
+            if (m_selectedIconType == IconType::Ship || lastChosenIcon == IconType::Ship) {
                 fields->fakeGlowDisplay->updatePlayerFrame(manager->getPlayerShip(), IconType::Ship);
                 MoreIcons::updateSimplePlayer(fields->fakeGlowDisplay, IconType::Ship);
                 fields->fakeGlowDisplay->setColor(manager->colorForIdx(manager->getPlayerColor()));
@@ -69,7 +55,7 @@ class $modify(IPGarageLayer, GJGarageLayer){
                 if (!manager->getPlayerGlow()) {
                     fields->fakeGlowDisplay->disableGlowOutline();
                 }
-            } else if (m_selectedIconType == IconType::Ufo) {
+            } else if (m_selectedIconType == IconType::Ufo || lastChosenIcon == IconType::Ufo) {
                 fields->fakeGlowDisplay->updatePlayerFrame(manager->getPlayerBird(), IconType::Ufo);
                 MoreIcons::updateSimplePlayer(fields->fakeGlowDisplay, IconType::Ufo);
                 fields->fakeGlowDisplay->setColor(manager->colorForIdx(manager->getPlayerColor()));
@@ -80,6 +66,23 @@ class $modify(IPGarageLayer, GJGarageLayer){
                     fields->fakeGlowDisplay->disableGlowOutline();
                 }
             }
+
+            fields->fakeGlowDisplay->m_firstLayer->setOpacity(0);
+            fields->fakeGlowDisplay->m_secondLayer->setVisible(false);
+            fields->fakeGlowDisplay->m_birdDome->setVisible(false);
+            fields->fakeGlowDisplay->m_detailSprite->setVisible(false);
+
+            if (m_selectedIconType == IconType::Ship || m_selectedIconType == IconType::Ufo || lastChosenIcon == IconType::Ship || lastChosenIcon == IconType::Ufo) {
+                if (manager->getPlayerGlow()) {
+                    fields->fakeGlowDisplay->setVisible(true);
+                    fields->fakeGlowDisplay->m_outlineSprite->setVisible(true);
+                    m_playerObject->m_outlineSprite->setVisible(false);
+                }
+            } else {
+                fields->fakeGlowDisplay->setVisible(false);
+                m_playerObject->m_outlineSprite->setVisible(manager->getPlayerGlow());
+            }
+
         }
 
     }
@@ -123,23 +126,10 @@ class $modify(IPGarageLayer, GJGarageLayer){
         }
 
         if (doGlowFix) {
-            fields->fakeGlowDisplay->m_firstLayer->setVisible(false);
-            fields->fakeGlowDisplay->m_secondLayer->setVisible(false);
-            fields->fakeGlowDisplay->m_birdDome->setVisible(false);
-            fields->fakeGlowDisplay->m_detailSprite->setVisible(false);
-
+            
             fields->fakeGlowDisplay->setPosition({posX, posY});
             fields->fakeGlowDisplay->setScale(1.6f);
-
-            if (lastSelectedIcon == IconType::Ship || lastSelectedIcon == IconType::Ufo) {
-                if (gameManager->getPlayerGlow()) {
-                    fields->fakeGlowDisplay->setVisible(true);
-                    fields->fakeGlowDisplay->m_outlineSprite->setVisible(true);
-                    m_playerObject->m_outlineSprite->setVisible(false);
-                } else {
-                    fields->fakeGlowDisplay->setVisible(false);
-                }
-            }
+            fields->fakeGlowDisplay->setID("fake-glow-display"_spr);
 
             if (lastSelectedIcon == IconType::Ship) {
                 fields->fakeGlowDisplay->updatePlayerFrame(gameManager->getPlayerShip(), IconType::Ship);
@@ -162,13 +152,26 @@ class $modify(IPGarageLayer, GJGarageLayer){
                     fields->fakeGlowDisplay->disableGlowOutline();
                 }
             }
+
+            fields->fakeGlowDisplay->m_firstLayer->setOpacity(0);
+            fields->fakeGlowDisplay->m_secondLayer->setVisible(false);
+            fields->fakeGlowDisplay->m_birdDome->setVisible(false);
+            fields->fakeGlowDisplay->m_detailSprite->setVisible(false);
+
+            if (lastSelectedIcon == IconType::Ship || lastSelectedIcon == IconType::Ufo) {
+                if (gameManager->getPlayerGlow()) {
+                    fields->fakeGlowDisplay->setVisible(true);
+                    fields->fakeGlowDisplay->m_outlineSprite->setVisible(true);
+                    m_playerObject->m_outlineSprite->setVisible(false);
+                } else {
+                    fields->fakeGlowDisplay->setVisible(false);
+                }
+            }
             
-            fields->fakeGlowDisplay->setID("fake-glow-display"_spr);
             this->addChild(fields->fakeGlowDisplay, -2);
         }
 
         fields->m_previewPlayer->setID("preview-simpleplayer"_spr);
-
         this->addChild(fields->m_previewPlayer, -1);
 
         return true;
@@ -197,21 +200,6 @@ class $modify(IPGarageLayer, GJGarageLayer){
         }
 
         if (doGlowFix) {
-            fields->fakeGlowDisplay->m_firstLayer->setVisible(false);
-            fields->fakeGlowDisplay->m_secondLayer->setVisible(false);
-            fields->fakeGlowDisplay->m_birdDome->setVisible(false);
-            fields->fakeGlowDisplay->m_detailSprite->setVisible(false);
-
-            if (m_selectedIconType == IconType::Ship || m_selectedIconType == IconType::Ufo) {
-                if (manager->getPlayerGlow()) {
-                    fields->fakeGlowDisplay->setVisible(true);
-                    fields->fakeGlowDisplay->m_outlineSprite->setVisible(true);
-                    m_playerObject->m_outlineSprite->setVisible(false);
-                }
-            } else {
-                fields->fakeGlowDisplay->setVisible(false);
-                m_playerObject->m_outlineSprite->setVisible(manager->getPlayerGlow());
-            }
 
             if (m_selectedIconType == IconType::Ship) {
                 fields->fakeGlowDisplay->updatePlayerFrame(manager->getPlayerShip(), IconType::Ship);
@@ -235,6 +223,21 @@ class $modify(IPGarageLayer, GJGarageLayer){
                 }
             }
 
+            fields->fakeGlowDisplay->m_firstLayer->setOpacity(0);
+            fields->fakeGlowDisplay->m_secondLayer->setVisible(false);
+            fields->fakeGlowDisplay->m_birdDome->setVisible(false);
+            fields->fakeGlowDisplay->m_detailSprite->setVisible(false);
+
+            if (m_selectedIconType == IconType::Ship || m_selectedIconType == IconType::Ufo) {
+                if (manager->getPlayerGlow()) {
+                    fields->fakeGlowDisplay->setVisible(true);
+                    fields->fakeGlowDisplay->m_outlineSprite->setVisible(true);
+                    m_playerObject->m_outlineSprite->setVisible(false);
+                }
+            } else {
+                fields->fakeGlowDisplay->setVisible(false);
+                m_playerObject->m_outlineSprite->setVisible(manager->getPlayerGlow());
+            }
         
         }
 

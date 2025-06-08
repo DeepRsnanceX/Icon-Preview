@@ -4,6 +4,11 @@
 #include <Geode/binding/SimplePlayer.hpp>
 #include <hiimjustin000.more_icons/include/MoreIcons.hpp>
 
+// -- JETPACK PREVIEW INFO --
+//X: +9.6 
+//Y: +6.4
+//SCALE: 0.96
+
 using namespace geode::prelude;
 
 auto doGlowFix = Mod::get()->getSettingValue<bool>("glow-fix");
@@ -185,12 +190,15 @@ class $modify(IPGarageLayer, GJGarageLayer){
 
         auto lastIcon = manager->m_playerIconType;
         bool dontHideOnSpecials = m_selectedIconType == IconType::Special || m_selectedIconType == IconType::DeathEffect || m_selectedIconType == IconType::ShipFire;
-        bool validLastIcon = lastIcon == IconType::Ship || lastIcon == IconType::Ufo;
+        bool validLastIcon = lastIcon == IconType::Ship || lastIcon == IconType::Ufo || lastIcon == IconType::Jetpack;
 
         float globalPosX = m_playerObject->getPositionX();
         float globalPosY = m_playerObject->getPositionY();
         float shipPosY = m_playerObject->getPositionY() + 16.f;
         float ufoPosY = m_playerObject->getPositionY() + 8.5f;
+        float jetpackPosX = m_playerObject->getPositionX() + 9.6f;
+        float jetpackPosY = m_playerObject->getPositionY() + 6.4f;
+        float jetpackScale = 0.96f;
 
         // this runs on selecting any mode just to make sure it updates properly
         fields->m_previewPlayer->updatePlayerFrame(manager->getPlayerFrame(), IconType::Cube);
@@ -225,6 +233,16 @@ class $modify(IPGarageLayer, GJGarageLayer){
                 if (!manager->getPlayerGlow()) {
                     fields->fakeGlowDisplay->disableGlowOutline();
                 }
+            } else if (m_selectedIconType == IconType::Jetpack) {
+                fields->fakeGlowDisplay->updatePlayerFrame(manager->getPlayerJetpack(), IconType::Jetpack);
+                MoreIcons::updateSimplePlayer(fields->fakeGlowDisplay, IconType::Jetpack);
+                fields->fakeGlowDisplay->setColor(manager->colorForIdx(manager->getPlayerColor()));
+                fields->fakeGlowDisplay->setSecondColor(manager->colorForIdx(manager->getPlayerColor2()));
+                fields->fakeGlowDisplay->setGlowOutline(manager->colorForIdx(manager->getPlayerGlowColor()));
+                fields->fakeGlowDisplay->enableCustomGlowColor(manager->colorForIdx(manager->getPlayerGlowColor()));
+                if (!manager->getPlayerGlow()) {
+                    fields->fakeGlowDisplay->disableGlowOutline();
+                }
             }
 
             fields->fakeGlowDisplay->m_firstLayer->setOpacity(0);
@@ -251,14 +269,27 @@ class $modify(IPGarageLayer, GJGarageLayer){
         
         }
 
+        // Positions for SHIP and UFO, as well as a scale
         auto moveToShipPos = CCEaseBackInOut::create(
             CCMoveTo::create(0.3f, {globalPosX, shipPosY})
         );
         auto moveToUfoPos = CCEaseBackInOut::create(
             CCMoveTo::create(0.3f, {globalPosX, ufoPosY})
         );
+        auto scaleToBasicSize = CCEaseBackInOut::create(
+            CCScaleTo::create(0.3f, 0.88f)
+        );
 
-        if (m_selectedIconType == IconType::Ship || m_selectedIconType == IconType::Ufo) {
+        // Positions and scaling for JETPACK
+        auto moveToJetpackPos = CCEaseBackInOut::create(
+            CCMoveTo::create(0.3f, {jetpackPosX, jetpackPosY})
+        );
+
+        auto scaleToJetpackSize = CCEaseBackInOut::create(
+            CCScaleTo::create(0.3f, jetpackScale)
+        );
+
+        if (m_selectedIconType == IconType::Ship || m_selectedIconType == IconType::Ufo || m_selectedIconType == IconType::Jetpack) {
             fields->m_previewPlayer->setVisible(true);
         } else if (dontHideOnSpecials && validLastIcon) {
             fields->m_previewPlayer->setVisible(true);
@@ -268,8 +299,13 @@ class $modify(IPGarageLayer, GJGarageLayer){
 
         if (m_selectedIconType == IconType::Ship) {
             fields->m_previewPlayer->runAction(moveToShipPos);
+            fields->m_previewPlayer->runAction(scaleToBasicSize);
         } else if (m_selectedIconType == IconType::Ufo) {
             fields->m_previewPlayer->runAction(moveToUfoPos);
+            fields->m_previewPlayer->runAction(scaleToBasicSize);
+        } else if (m_selectedIconType == IconType::Jetpack) {
+            fields->m_previewPlayer->runAction(moveToJetpackPos);
+            fields->m_previewPlayer->runAction(scaleToJetpackSize);
         }
 
     }

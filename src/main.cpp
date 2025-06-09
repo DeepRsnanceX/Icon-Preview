@@ -3,6 +3,7 @@
 #include <Geode/binding/GameManager.hpp>
 #include <Geode/binding/SimplePlayer.hpp>
 #include <hiimjustin000.more_icons/include/MoreIcons.hpp>
+#include "helper.hpp"
 
 // -- JETPACK PREVIEW INFO --
 //X: +6 -------> 9
@@ -10,6 +11,69 @@
 //SCALE: 0.6 --> 0.9
 
 using namespace geode::prelude;
+
+// ------------------------------------
+// FUNCTIONS FOR VANILLA/MORE ICONS FUNCTIONALITY
+// ------------------------------------
+void IconPreview::updatePreviewCube(SimplePlayer* player) {
+    auto manager = GameManager::sharedState();
+
+    player->updatePlayerFrame(manager->getPlayerFrame(), IconType::Cube);
+    MoreIcons::updateSimplePlayer(player, IconType::Cube);
+    player->setColor(manager->colorForIdx(manager->getPlayerColor()));
+    player->setSecondColor(manager->colorForIdx(manager->getPlayerColor2()));
+    player->setGlowOutline(manager->colorForIdx(manager->getPlayerGlowColor()));
+    player->enableCustomGlowColor(manager->colorForIdx(manager->getPlayerGlowColor()));
+    if (!manager->getPlayerGlow()) {
+        player->disableGlowOutline();
+    }
+}
+void IconPreview::updateShipGlow(SimplePlayer* glowPlayer) {
+    auto manager = GameManager::sharedState();
+
+    glowPlayer->updatePlayerFrame(manager->getPlayerShip(), IconType::Ship);
+    MoreIcons::updateSimplePlayer(glowPlayer, IconType::Ship);
+    glowPlayer->setColor(manager->colorForIdx(manager->getPlayerColor()));
+    glowPlayer->setSecondColor(manager->colorForIdx(manager->getPlayerColor2()));
+    glowPlayer->setGlowOutline(manager->colorForIdx(manager->getPlayerGlowColor()));
+    glowPlayer->enableCustomGlowColor(manager->colorForIdx(manager->getPlayerGlowColor()));
+    if (!manager->getPlayerGlow()) {
+        glowPlayer->disableGlowOutline();
+    }
+}
+void IconPreview::updateBirdGlow(SimplePlayer* glowPlayer) {
+    auto manager = GameManager::sharedState();
+
+    glowPlayer->updatePlayerFrame(manager->getPlayerBird(), IconType::Ufo);
+    MoreIcons::updateSimplePlayer(glowPlayer, IconType::Ufo);
+    glowPlayer->setColor(manager->colorForIdx(manager->getPlayerColor()));
+    glowPlayer->setSecondColor(manager->colorForIdx(manager->getPlayerColor2()));
+    glowPlayer->setGlowOutline(manager->colorForIdx(manager->getPlayerGlowColor()));
+    glowPlayer->enableCustomGlowColor(manager->colorForIdx(manager->getPlayerGlowColor()));
+    if (!manager->getPlayerGlow()) {
+        glowPlayer->disableGlowOutline();
+    }
+}
+void IconPreview::updateJetpackGlow(SimplePlayer* glowPlayer) {
+    auto manager = GameManager::sharedState();
+
+    glowPlayer->updatePlayerFrame(manager->getPlayerJetpack(), IconType::Jetpack);
+    MoreIcons::updateSimplePlayer(glowPlayer, IconType::Jetpack);
+    glowPlayer->setColor(manager->colorForIdx(manager->getPlayerColor()));
+    glowPlayer->setSecondColor(manager->colorForIdx(manager->getPlayerColor2()));
+    glowPlayer->setGlowOutline(manager->colorForIdx(manager->getPlayerGlowColor()));
+    glowPlayer->enableCustomGlowColor(manager->colorForIdx(manager->getPlayerGlowColor()));
+    if (!manager->getPlayerGlow()) {
+        glowPlayer->disableGlowOutline();
+    }
+}
+
+// ------------------------------------
+// FUNCTIONS FOR SEPARATE DUAL ICONS FUNCTIONALITY
+// ------------------------------------
+
+
+
 
 auto doGlowFix = Mod::get()->getSettingValue<bool>("glow-fix");
 
@@ -22,7 +86,7 @@ $on_mod(Loaded) {
 class $modify(IPGarageLayer, GJGarageLayer){
     struct Fields {
         SimplePlayer* m_previewPlayer = SimplePlayer::create(0);
-        SimplePlayer* m_secondPreview = SimplePlayer::create(0); //xdd
+        SimplePlayer* m_dualPreview = SimplePlayer::create(0); //xdd
         SimplePlayer* fakeGlowDisplay = SimplePlayer::create(0);
     };
 
@@ -68,15 +132,9 @@ class $modify(IPGarageLayer, GJGarageLayer){
             fields->m_previewPlayer->setPosition({posX, posY + 20.f});
         }
 
-        fields->m_previewPlayer->updatePlayerFrame(gameManager->getPlayerFrame(), IconType::Cube);
-        MoreIcons::updateSimplePlayer(fields->m_previewPlayer, IconType::Cube);
-        fields->m_previewPlayer->setColor(gameManager->colorForIdx(gameManager->getPlayerColor()));
-        fields->m_previewPlayer->setSecondColor(gameManager->colorForIdx(gameManager->getPlayerColor2()));
-        fields->m_previewPlayer->setGlowOutline(gameManager->colorForIdx(gameManager->getPlayerGlowColor()));
-        fields->m_previewPlayer->enableCustomGlowColor(gameManager->colorForIdx(gameManager->getPlayerGlowColor()));
-        if (!gameManager->getPlayerGlow()) {
-            fields->m_previewPlayer->disableGlowOutline();
-        }
+        SimplePlayer* playerToSend = fields->m_previewPlayer;
+
+        IconPreview::updatePreviewCube(playerToSend);
 
         if (doGlowFix) {
             
@@ -85,37 +143,16 @@ class $modify(IPGarageLayer, GJGarageLayer){
 
             if (lastSelectedIcon == IconType::Ship) {
                 fields->fakeGlowDisplay->setScale(1.6f);
-                fields->fakeGlowDisplay->updatePlayerFrame(gameManager->getPlayerShip(), IconType::Ship);
-                MoreIcons::updateSimplePlayer(fields->fakeGlowDisplay, IconType::Ship);
-                fields->fakeGlowDisplay->setColor(gameManager->colorForIdx(gameManager->getPlayerColor()));
-                fields->fakeGlowDisplay->setSecondColor(gameManager->colorForIdx(gameManager->getPlayerColor2()));
-                fields->fakeGlowDisplay->setGlowOutline(gameManager->colorForIdx(gameManager->getPlayerGlowColor()));
-                fields->fakeGlowDisplay->enableCustomGlowColor(gameManager->colorForIdx(gameManager->getPlayerGlowColor()));
-                if (!gameManager->getPlayerGlow()) {
-                    fields->fakeGlowDisplay->disableGlowOutline();
-                }
+                IconPreview::updateShipGlow(fields->fakeGlowDisplay);
+
             } else if (lastSelectedIcon == IconType::Ufo) {
                 fields->fakeGlowDisplay->setScale(1.6f);
-                fields->fakeGlowDisplay->updatePlayerFrame(gameManager->getPlayerBird(), IconType::Ufo);
-                MoreIcons::updateSimplePlayer(fields->fakeGlowDisplay, IconType::Ufo);
-                fields->fakeGlowDisplay->setColor(gameManager->colorForIdx(gameManager->getPlayerColor()));
-                fields->fakeGlowDisplay->setSecondColor(gameManager->colorForIdx(gameManager->getPlayerColor2()));
-                fields->fakeGlowDisplay->setGlowOutline(gameManager->colorForIdx(gameManager->getPlayerGlowColor()));
-                fields->fakeGlowDisplay->enableCustomGlowColor(gameManager->colorForIdx(gameManager->getPlayerGlowColor()));
-                if (!gameManager->getPlayerGlow()) {
-                    fields->fakeGlowDisplay->disableGlowOutline();
-                }
+                IconPreview::updateBirdGlow(fields->fakeGlowDisplay);
+
             } else if (lastSelectedIcon == IconType::Jetpack) {
                 fields->fakeGlowDisplay->setScale(1.5f);
-                fields->fakeGlowDisplay->updatePlayerFrame(gameManager->getPlayerJetpack(), IconType::Jetpack);
-                MoreIcons::updateSimplePlayer(fields->fakeGlowDisplay, IconType::Jetpack);
-                fields->fakeGlowDisplay->setColor(gameManager->colorForIdx(gameManager->getPlayerColor()));
-                fields->fakeGlowDisplay->setSecondColor(gameManager->colorForIdx(gameManager->getPlayerColor2()));
-                fields->fakeGlowDisplay->setGlowOutline(gameManager->colorForIdx(gameManager->getPlayerGlowColor()));
-                fields->fakeGlowDisplay->enableCustomGlowColor(gameManager->colorForIdx(gameManager->getPlayerGlowColor()));
-                if (!gameManager->getPlayerGlow()) {
-                    fields->fakeGlowDisplay->disableGlowOutline();
-                }
+                IconPreview::updateJetpackGlow(fields->fakeGlowDisplay);
+
             }
 
             fields->fakeGlowDisplay->m_firstLayer->setOpacity(0);
@@ -150,51 +187,21 @@ class $modify(IPGarageLayer, GJGarageLayer){
         auto manager = GameManager::sharedState();
         auto lastChosenIcon = manager->m_playerIconType;
 
-        fields->m_previewPlayer->updatePlayerFrame(manager->getPlayerFrame(), IconType::Cube);
-        MoreIcons::updateSimplePlayer(fields->m_previewPlayer, IconType::Cube);
-        fields->m_previewPlayer->setColor(manager->colorForIdx(manager->getPlayerColor()));
-        fields->m_previewPlayer->setSecondColor(manager->colorForIdx(manager->getPlayerColor2()));
-        fields->m_previewPlayer->setGlowOutline(manager->colorForIdx(manager->getPlayerGlowColor()));
-        fields->m_previewPlayer->enableCustomGlowColor(manager->colorForIdx(manager->getPlayerGlowColor()));
-        if (!manager->getPlayerGlow()) {
-            fields->m_previewPlayer->disableGlowOutline();
-        }
+        IconPreview::updatePreviewCube(fields->m_previewPlayer);
 
         if (doGlowFix) {
 
             if (m_selectedIconType == IconType::Ship || lastChosenIcon == IconType::Ship) {
                 fields->fakeGlowDisplay->setScale(1.6f);
-                fields->fakeGlowDisplay->updatePlayerFrame(manager->getPlayerShip(), IconType::Ship);
-                MoreIcons::updateSimplePlayer(fields->fakeGlowDisplay, IconType::Ship);
-                fields->fakeGlowDisplay->setColor(manager->colorForIdx(manager->getPlayerColor()));
-                fields->fakeGlowDisplay->setSecondColor(manager->colorForIdx(manager->getPlayerColor2()));
-                fields->fakeGlowDisplay->setGlowOutline(manager->colorForIdx(manager->getPlayerGlowColor()));
-                fields->fakeGlowDisplay->enableCustomGlowColor(manager->colorForIdx(manager->getPlayerGlowColor()));
-                if (!manager->getPlayerGlow()) {
-                    fields->fakeGlowDisplay->disableGlowOutline();
-                }
+                IconPreview::updateShipGlow(fields->fakeGlowDisplay);
+
             } else if (m_selectedIconType == IconType::Ufo || lastChosenIcon == IconType::Ufo) {
                 fields->fakeGlowDisplay->setScale(1.6f);
-                fields->fakeGlowDisplay->updatePlayerFrame(manager->getPlayerBird(), IconType::Ufo);
-                MoreIcons::updateSimplePlayer(fields->fakeGlowDisplay, IconType::Ufo);
-                fields->fakeGlowDisplay->setColor(manager->colorForIdx(manager->getPlayerColor()));
-                fields->fakeGlowDisplay->setSecondColor(manager->colorForIdx(manager->getPlayerColor2()));
-                fields->fakeGlowDisplay->setGlowOutline(manager->colorForIdx(manager->getPlayerGlowColor()));
-                fields->fakeGlowDisplay->enableCustomGlowColor(manager->colorForIdx(manager->getPlayerGlowColor()));
-                if (!manager->getPlayerGlow()) {
-                    fields->fakeGlowDisplay->disableGlowOutline();
-                }
+                IconPreview::updateBirdGlow(fields->fakeGlowDisplay);
+
             } else if (m_selectedIconType == IconType::Jetpack || lastChosenIcon == IconType::Jetpack) {
                 fields->fakeGlowDisplay->setScale(1.5f);
-                fields->fakeGlowDisplay->updatePlayerFrame(manager->getPlayerJetpack(), IconType::Jetpack);
-                MoreIcons::updateSimplePlayer(fields->fakeGlowDisplay, IconType::Jetpack);
-                fields->fakeGlowDisplay->setColor(manager->colorForIdx(manager->getPlayerColor()));
-                fields->fakeGlowDisplay->setSecondColor(manager->colorForIdx(manager->getPlayerColor2()));
-                fields->fakeGlowDisplay->setGlowOutline(manager->colorForIdx(manager->getPlayerGlowColor()));
-                fields->fakeGlowDisplay->enableCustomGlowColor(manager->colorForIdx(manager->getPlayerGlowColor()));
-                if (!manager->getPlayerGlow()) {
-                    fields->fakeGlowDisplay->disableGlowOutline();
-                }
+                IconPreview::updateJetpackGlow(fields->fakeGlowDisplay);
             }
 
             fields->fakeGlowDisplay->m_firstLayer->setOpacity(0);
@@ -242,51 +249,21 @@ class $modify(IPGarageLayer, GJGarageLayer){
         float jetpackScale = 0.9f;
 
         // this runs on selecting any mode just to make sure it updates properly
-        fields->m_previewPlayer->updatePlayerFrame(manager->getPlayerFrame(), IconType::Cube);
-        MoreIcons::updateSimplePlayer(fields->m_previewPlayer, IconType::Cube);
-        fields->m_previewPlayer->setColor(manager->colorForIdx(manager->getPlayerColor()));
-        fields->m_previewPlayer->setSecondColor(manager->colorForIdx(manager->getPlayerColor2()));
-        fields->m_previewPlayer->setGlowOutline(manager->colorForIdx(manager->getPlayerGlowColor()));
-        fields->m_previewPlayer->enableCustomGlowColor(manager->colorForIdx(manager->getPlayerGlowColor()));
-        if (!manager->getPlayerGlow()) {
-            fields->m_previewPlayer->disableGlowOutline();
-        }
+        IconPreview::updatePreviewCube(fields->m_previewPlayer);
 
         if (doGlowFix) {
 
             if (m_selectedIconType == IconType::Ship) {
                 fields->fakeGlowDisplay->setScale(1.6f);
-                fields->fakeGlowDisplay->updatePlayerFrame(manager->getPlayerShip(), IconType::Ship);
-                MoreIcons::updateSimplePlayer(fields->fakeGlowDisplay, IconType::Ship);
-                fields->fakeGlowDisplay->setColor(manager->colorForIdx(manager->getPlayerColor()));
-                fields->fakeGlowDisplay->setSecondColor(manager->colorForIdx(manager->getPlayerColor2()));
-                fields->fakeGlowDisplay->setGlowOutline(manager->colorForIdx(manager->getPlayerGlowColor()));
-                fields->fakeGlowDisplay->enableCustomGlowColor(manager->colorForIdx(manager->getPlayerGlowColor()));
-                if (!manager->getPlayerGlow()) {
-                    fields->fakeGlowDisplay->disableGlowOutline();
-                }
+                IconPreview::updateShipGlow(fields->fakeGlowDisplay);
+
             } else if (m_selectedIconType == IconType::Ufo) {
                 fields->fakeGlowDisplay->setScale(1.6f);
-                fields->fakeGlowDisplay->updatePlayerFrame(manager->getPlayerBird(), IconType::Ufo);
-                MoreIcons::updateSimplePlayer(fields->fakeGlowDisplay, IconType::Ufo);
-                fields->fakeGlowDisplay->setColor(manager->colorForIdx(manager->getPlayerColor()));
-                fields->fakeGlowDisplay->setSecondColor(manager->colorForIdx(manager->getPlayerColor2()));
-                fields->fakeGlowDisplay->setGlowOutline(manager->colorForIdx(manager->getPlayerGlowColor()));
-                fields->fakeGlowDisplay->enableCustomGlowColor(manager->colorForIdx(manager->getPlayerGlowColor()));
-                if (!manager->getPlayerGlow()) {
-                    fields->fakeGlowDisplay->disableGlowOutline();
-                }
+                IconPreview::updateBirdGlow(fields->fakeGlowDisplay);
+
             } else if (m_selectedIconType == IconType::Jetpack) {
                 fields->fakeGlowDisplay->setScale(1.5f);
-                fields->fakeGlowDisplay->updatePlayerFrame(manager->getPlayerJetpack(), IconType::Jetpack);
-                MoreIcons::updateSimplePlayer(fields->fakeGlowDisplay, IconType::Jetpack);
-                fields->fakeGlowDisplay->setColor(manager->colorForIdx(manager->getPlayerColor()));
-                fields->fakeGlowDisplay->setSecondColor(manager->colorForIdx(manager->getPlayerColor2()));
-                fields->fakeGlowDisplay->setGlowOutline(manager->colorForIdx(manager->getPlayerGlowColor()));
-                fields->fakeGlowDisplay->enableCustomGlowColor(manager->colorForIdx(manager->getPlayerGlowColor()));
-                if (!manager->getPlayerGlow()) {
-                    fields->fakeGlowDisplay->disableGlowOutline();
-                }
+                IconPreview::updateJetpackGlow(fields->fakeGlowDisplay);
             }
 
             fields->fakeGlowDisplay->m_firstLayer->setOpacity(0);

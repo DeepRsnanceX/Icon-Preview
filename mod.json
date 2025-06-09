@@ -12,6 +12,12 @@
 			"name": "Glow Layering Fix",
 			"default": true,
 			"description": "Does some silly stuff to fix the Ship/UFO glow overlaying the entire cube in the garage, making it look more accurate to in-game. \n\n<cr>Shouldn't cause any issues, but disable if you encounter any with icon coloring, layering or similar.</c>"
+		},
+		"reload-btn": {
+			"type": "bool",
+			"name": "Reload Button",
+			"default": false,
+			"description": "Adds a button to the garage to reload the icon preview. Added for compatibility with the Separate Dual Icons mod, meant to be used after switching P1-P2 icon sets. \n\n <cr>If you have a better idea for compatibility, go ahead. I'm waiting.</c>"
 		}
 	},
 	"dependencies": {
@@ -20,9 +26,12 @@
             "importance": "suggested"
         }
     },
+	"links": {
+		"source": "https://github.com/DeepRsnanceX/Icon-Preview"
+	},
 	"id": "saritahhh.icon_preview",
 	"name": "Icon Preview",
-	"version": "v1.0.0",
+	"version": "v1.0.1",
 	"developer": "Saritahhh",
 	"description": "Preview your cube's position in the garage!"
 }

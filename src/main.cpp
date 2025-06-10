@@ -160,6 +160,110 @@ class $modify(IPGarageLayer, GJGarageLayer){
         (void) self.setHookPriorityBeforePre("GJGarageLayer::onSelect", "hiimjustin000.more_icons");
     }
 
+    void onReloadButton(CCObject* sender) {
+        
+        auto fields = m_fields.self();
+        auto manager = GameManager::sharedState();
+        auto lastChosenIcon = manager->m_playerIconType;
+
+        bool isSeparateLoaded = Loader::get()->isModLoaded("weebify.separate_dual_icons");
+        auto SDL = Loader::get()->getLoadedMod("weebify.separate_dual_icons");
+        int lastDualMode = 0;
+        bool dualHasGlow = false;
+
+        IconPreview::updatePreviewCube(fields->m_previewPlayer);
+
+        if (doGlowFix) {
+
+            if (m_selectedIconType == IconType::Ship || lastChosenIcon == IconType::Ship) {
+                fields->fakeGlowDisplay->setScale(1.6f);
+                IconPreview::updateShipGlow(fields->fakeGlowDisplay);
+
+            } else if (m_selectedIconType == IconType::Ufo || lastChosenIcon == IconType::Ufo) {
+                fields->fakeGlowDisplay->setScale(1.6f);
+                IconPreview::updateBirdGlow(fields->fakeGlowDisplay);
+
+            } else if (m_selectedIconType == IconType::Jetpack || lastChosenIcon == IconType::Jetpack) {
+                fields->fakeGlowDisplay->setScale(1.5f);
+                IconPreview::updateJetpackGlow(fields->fakeGlowDisplay);
+            }
+
+            fields->fakeGlowDisplay->m_firstLayer->setOpacity(0);
+            fields->fakeGlowDisplay->m_secondLayer->setVisible(false);
+            fields->fakeGlowDisplay->m_birdDome->setVisible(false);
+            fields->fakeGlowDisplay->m_detailSprite->setVisible(false);
+
+            if (m_selectedIconType == IconType::Ship || m_selectedIconType == IconType::Ufo || m_selectedIconType == IconType::Jetpack || lastChosenIcon == IconType::Ship || lastChosenIcon == IconType::Ufo || lastChosenIcon == IconType::Jetpack) {
+                if (manager->getPlayerGlow()) {
+                    fields->fakeGlowDisplay->setVisible(true);
+                    fields->fakeGlowDisplay->m_outlineSprite->setVisible(true);
+                    m_playerObject->m_outlineSprite->setVisible(false);
+                }
+            } else {
+                fields->fakeGlowDisplay->setVisible(false);
+                m_playerObject->m_outlineSprite->setVisible(manager->getPlayerGlow());
+            }
+
+            if (m_selectedIconType == IconType::Jetpack || lastChosenIcon == IconType::Jetpack) {
+                fields->fakeGlowDisplay->setScale(1.5f);
+            } else {
+                fields->fakeGlowDisplay->setScale(1.6f);
+            }
+
+        }
+        
+        if (isSeparateLoaded) {
+            lastDualMode = SDL->getSavedValue<int64_t>("lastmode");
+
+            dualHasGlow = SDL->getSavedValue<bool>("glow");
+            SimplePlayer* p2Icon = as<SimplePlayer*>(this->getChildByID("player2-icon"));
+
+            IconPreview::updateDualPreviewCube(fields->m_dualPreview);
+
+            if (doGlowFix) {
+                if (lastDualMode == 1) {
+                    fields->m_dualGlowDisplay->setScale(1.6f);
+                    IconPreview::updateDualShipGlow(fields->m_dualGlowDisplay);
+
+                } else if (lastDualMode == 3) {
+                    fields->m_dualGlowDisplay->setScale(1.6f);
+                    IconPreview::updateDualBirdGlow(fields->m_dualGlowDisplay);
+
+                } else if (lastDualMode == 8) {
+                    fields->m_dualGlowDisplay->setScale(1.5f);
+                    IconPreview::updateDualJetpackGlow(fields->m_dualGlowDisplay);
+                }
+
+                fields->m_dualGlowDisplay->m_firstLayer->setOpacity(0);
+                fields->m_dualGlowDisplay->m_secondLayer->setVisible(false);
+                fields->m_dualGlowDisplay->m_birdDome->setVisible(false);
+                fields->m_dualGlowDisplay->m_detailSprite->setVisible(false);
+
+                if (lastDualMode == 1 || lastDualMode == 3 || lastDualMode == 8) {
+                    if (dualHasGlow) {
+                        fields->m_dualGlowDisplay->setVisible(true);
+                        fields->m_dualGlowDisplay->m_outlineSprite->setVisible(true);
+                        if (p2Icon){
+                            p2Icon->m_outlineSprite->setVisible(false);
+                        }
+                    }
+                } else {
+                    fields->m_dualGlowDisplay->setVisible(false);
+                    if (p2Icon) {
+                        p2Icon->m_outlineSprite->setVisible(dualHasGlow);
+                    }
+                }
+
+                if (lastDualMode == 8) {
+                    fields->m_dualGlowDisplay->setScale(1.5f);
+                } else {
+                    fields->m_dualGlowDisplay->setScale(1.6f);
+                }
+            }
+        }
+
+    }
+
     bool init() {
         if (!GJGarageLayer::init()) return false;
 
@@ -326,6 +430,19 @@ class $modify(IPGarageLayer, GJGarageLayer){
 
         }
 
+        if (enableReloadBtn) {
+            auto spr = CircleButtonSprite::createWithSprite("reload.png"_spr, 1.0f, CircleBaseColor::Pink, CircleBaseSize::Small);
+            auto reloadButton = CCMenuItemSpriteExtra::create(
+                spr,
+                this,
+                menu_selector(IPGarageLayer::onReloadButton)
+            );
+            reloadButton->setID("reload-button"_spr);
+
+            auto sexito = as<CCMenu*>(this->getChildByID("shards-menu"));
+            sexito->addChild(reloadButton);
+        }
+
         return true;
     }
 
@@ -476,15 +593,15 @@ class $modify(IPGarageLayer, GJGarageLayer){
 
         if (doGlowFix) {
 
-            if (m_selectedIconType == IconType::Ship) {
+            if (m_selectedIconType == IconType::Ship || lastIcon == IconType::Ship) {
                 fields->fakeGlowDisplay->setScale(1.6f);
                 IconPreview::updateShipGlow(fields->fakeGlowDisplay);
 
-            } else if (m_selectedIconType == IconType::Ufo) {
+            } else if (m_selectedIconType == IconType::Ufo || lastIcon == IconType::Ufo) {
                 fields->fakeGlowDisplay->setScale(1.6f);
                 IconPreview::updateBirdGlow(fields->fakeGlowDisplay);
 
-            } else if (m_selectedIconType == IconType::Jetpack) {
+            } else if (m_selectedIconType == IconType::Jetpack || lastIcon == IconType::Jetpack) {
                 fields->fakeGlowDisplay->setScale(1.5f);
                 IconPreview::updateJetpackGlow(fields->fakeGlowDisplay);
             }
@@ -494,7 +611,7 @@ class $modify(IPGarageLayer, GJGarageLayer){
             fields->fakeGlowDisplay->m_birdDome->setVisible(false);
             fields->fakeGlowDisplay->m_detailSprite->setVisible(false);
 
-            if (m_selectedIconType == IconType::Ship || m_selectedIconType == IconType::Ufo || m_selectedIconType == IconType::Jetpack) {
+            if (m_selectedIconType == IconType::Ship || m_selectedIconType == IconType::Ufo || m_selectedIconType == IconType::Jetpack || lastIcon == IconType::Ship || lastIcon == IconType::Ufo || lastIcon == IconType::Jetpack) {
                 if (manager->getPlayerGlow()) {
                     fields->fakeGlowDisplay->setVisible(true);
                     fields->fakeGlowDisplay->m_outlineSprite->setVisible(true);
@@ -532,7 +649,7 @@ class $modify(IPGarageLayer, GJGarageLayer){
             CCScaleTo::create(0.3f, jetpackScale)
         );
 
-        if (m_selectedIconType == IconType::Ship || m_selectedIconType == IconType::Ufo || m_selectedIconType == IconType::Jetpack) {
+        if (m_selectedIconType == IconType::Ship || m_selectedIconType == IconType::Ufo || m_selectedIconType == IconType::Jetpack || lastIcon == IconType::Ship || lastIcon == IconType::Ufo || lastIcon == IconType::Jetpack) {
             fields->m_previewPlayer->setVisible(true);
         } else if (dontHideOnSpecials && validLastIcon) {
             fields->m_previewPlayer->setVisible(true);

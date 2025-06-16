@@ -431,7 +431,7 @@ class $modify(IPGarageLayer, GJGarageLayer){
         }
 
         if (enableReloadBtn) {
-            auto spr = CircleButtonSprite::createWithSprite("reload.png"_spr, 1.0f, CircleBaseColor::Pink, CircleBaseSize::Small);
+            auto spr = CircleButtonSprite::createWithSprite("reload.png"_spr, 1.25f, CircleBaseColor::Green, CircleBaseSize::Small);
             auto reloadButton = CCMenuItemSpriteExtra::create(
                 spr,
                 this,

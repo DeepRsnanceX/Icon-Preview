@@ -7,7 +7,6 @@ By default, this mod does some funny stuff to ensure proper layering if ***Glow*
 
 ## Compatibility with other Icon Mods
 - <cg>More Icons</c>: Should be completely compatible and functional!
-- <co>Fine Outline</c>: Works, but cube won't have the custom outline color.
-- <co>Separate Dual Icons</c>: Cube preview will only exist for Player 1. Proper compat planned in a future update!
-
-*<c-383838>Preview on Jetpack is planned too, btw. Don't worry.</c>*
+- <cy>Separate Dual Icons</c>: Semi-works! Switching P1<->P2 icon sets needs a reload of the icon preview afterwards. (Check mod settings!)
+- <co>Fine Outline</c>: Works, cube won't have the custom outline color.
+- <co>Icon Gradients</c>: Works, cube won't have the custom gradient applied.

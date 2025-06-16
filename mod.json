@@ -15,9 +15,9 @@
 		},
 		"reload-btn": {
 			"type": "bool",
-			"name": "Reload Button",
+			"name": "Reload Button (Read Info!)",
 			"default": false,
-			"description": "Adds a button to the garage to reload the icon preview. Added for compatibility with the Separate Dual Icons mod, meant to be used after switching P1-P2 icon sets. \n\n <cr>If you have a better idea for compatibility, go ahead. I'm waiting.</c>"
+			"description": "Adds a button to the garage to reload the icon preview. This is added for compatibility with the **Separate Dual Icons** mod, meant to be used ***<cy>after switching P1-P2 icon sets.</c>*** \n\n <cr>Not the best possible way to make compatibility, i know, but i'm not bothering with finding a better one.</c>"
 		}
 	},
 	"dependencies": {

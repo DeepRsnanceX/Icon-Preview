@@ -290,6 +290,19 @@ class $modify(IPGarageLayer, GJGarageLayer){
         float dualJetpackPosY = 0.f;
         bool dualHasGlow = false;
 
+        if (enableReloadBtn) {
+            auto spr = CircleButtonSprite::createWithSprite("reload.png"_spr, 1.25f, CircleBaseColor::Green, CircleBaseSize::Small);
+            auto reloadButton = CCMenuItemSpriteExtra::create(
+                spr,
+                this,
+                menu_selector(IPGarageLayer::onReloadButton)
+            );
+            reloadButton->setID("reload-button"_spr);
+
+            auto sexito = as<CCMenu*>(this->getChildByID("shards-menu"));
+            sexito->addChild(reloadButton);
+        }
+
         if (lastSelectedIcon == IconType::Ship || lastSelectedIcon == IconType::Ufo || lastSelectedIcon == IconType::Jetpack) {
             fields->m_previewPlayer->setVisible(true);
         } else {
@@ -438,19 +451,6 @@ class $modify(IPGarageLayer, GJGarageLayer){
             fields->m_dualPreview->setID("dual-preview-simpleplayer"_spr);
             this->addChild(fields->m_dualPreview, -1);
 
-        }
-
-        if (enableReloadBtn) {
-            auto spr = CircleButtonSprite::createWithSprite("reload.png"_spr, 1.25f, CircleBaseColor::Green, CircleBaseSize::Small);
-            auto reloadButton = CCMenuItemSpriteExtra::create(
-                spr,
-                this,
-                menu_selector(IPGarageLayer::onReloadButton)
-            );
-            reloadButton->setID("reload-button"_spr);
-
-            auto sexito = as<CCMenu*>(this->getChildByID("shards-menu"));
-            sexito->addChild(reloadButton);
         }
 
         return true;

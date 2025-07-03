@@ -740,12 +740,17 @@ class $modify(IPGarageLayer, GJGarageLayer){
                     CCScaleTo::create(0.3f, 0.88f)
                 ));
             } else if (lastDualMode == 8) { // JETPACK
-                fields->m_dualPreview->runAction(CCEaseBackInOut::create(
-                    CCMoveTo::create(0.3f, {dualJetpackPosX, dualJetpackPosY})
-                ));
-                fields->m_dualPreview->runAction(CCEaseBackInOut::create(
-                    CCScaleTo::create(0.3f, 0.9f)
-                ));
+                if (p2Icon->getScale() != 1.6f) {
+                    fields->m_dualPreview->runAction(CCEaseBackInOut::create(
+                        CCMoveTo::create(0.3f, {dualJetpackPosX, dualJetpackPosY})
+                    ));
+                    fields->m_dualPreview->runAction(CCEaseBackInOut::create(
+                        CCScaleTo::create(0.3f, 0.9f)
+                    ));
+                } else {
+                    fields->m_dualGlowDisplay->setScale(1.6f);
+                }
+                
             }
 
         }

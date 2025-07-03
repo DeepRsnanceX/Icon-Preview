@@ -158,7 +158,7 @@ class $modify(IPGarageLayer, GJGarageLayer){
 
     static void onModify(auto& self) {
         (void) self.setHookPriorityBeforePre("GJGarageLayer::onSelect", "hiimjustin000.more_icons");
-        (bool) self.setHookPriorityAfterPre("GJGarageLayer::init", "weebify.separate_dual_icons");
+        (void) self.setHookPriorityBeforePre("GJGarageLayer::updatePlayerColors", "weebify.separate_dual_icons");
     }
 
     void onReloadButton(CCObject* sender) {
@@ -271,6 +271,7 @@ class $modify(IPGarageLayer, GJGarageLayer){
         auto fields = m_fields.self();
         auto gameManager = GameManager::sharedState();
         auto lastSelectedIcon = gameManager->m_playerIconType;
+        auto winSize = CCDirector::sharedDirector()->getWinSize();
 
         float posX = m_playerObject->getPositionX();
         float posY = m_playerObject->getPositionY();
@@ -279,7 +280,8 @@ class $modify(IPGarageLayer, GJGarageLayer){
         float jPosX = m_playerObject->getPositionX() + 9.f;
         float jPosY = m_playerObject->getPositionY() + 6.f;
 
-        auto winSize = CCDirector::sharedDirector()->getWinSize();
+        float screenCenterX = winSize.width / 2;
+        float player1PosWhenDualIcons = screenCenterX - winSize.width / 12;
 
         // dual icons stuff
         bool isSeparateLoaded = Loader::get()->isModLoaded("weebify.separate_dual_icons");
@@ -361,13 +363,16 @@ class $modify(IPGarageLayer, GJGarageLayer){
             lastDualMode = SDL->getSavedValue<int64_t>("lastmode");
 
             SimplePlayer* p2Icon = as<SimplePlayer*>(this->getChildByID("player2-icon"));
-            dualPosX = m_playerObject->getPositionX() + winSize.width / 6;
+            dualPosX = player1PosWhenDualIcons + winSize.width / 6;
             dualPosY = m_playerObject->getPositionY();
             dualShipPosY = m_playerObject->getPositionY() + 16.f;
             dualUfoPosY = m_playerObject->getPositionY() + 8.5f;
             dualJetpackPosX = dualPosX + 9.f;
             dualJetpackPosY = m_playerObject->getPositionY() + 6.f;
             dualHasGlow = SDL->getSavedValue<bool>("glow");
+
+            fields->m_previewPlayer->setPositionX(player1PosWhenDualIcons);
+            fields->fakeGlowDisplay->setPositionX(player1PosWhenDualIcons);
 
             if (lastDualMode == 1 || lastDualMode == 3 || lastDualMode == 8) {
                 fields->m_dualPreview->setVisible(true);
@@ -419,7 +424,7 @@ class $modify(IPGarageLayer, GJGarageLayer){
                         if (p2Icon){
                             p2Icon->m_outlineSprite->setVisible(false);
                         } else {
-                            geode::log::debug("p2 icon not found! on glow enabled, something went wrong");
+                            geode::log::warn("p2 icon not found! something went wrong, sorry. are you on android/ios by any chance LOL");
                         }
                     } else {
                         fields->m_dualGlowDisplay->setVisible(false);
@@ -522,7 +527,11 @@ class $modify(IPGarageLayer, GJGarageLayer){
                     IconPreview::updateDualBirdGlow(fields->m_dualGlowDisplay);
 
                 } else if (lastDualMode == 8) {
-                    fields->m_dualGlowDisplay->setScale(1.5f);
+                    if (p2Icon) {
+                        fields->m_dualGlowDisplay->setScale(p2Icon->getScale());
+                    } else {
+                        fields->m_dualGlowDisplay->setScale(1.5f);
+                    }
                     IconPreview::updateDualJetpackGlow(fields->m_dualGlowDisplay);
                 }
 
@@ -538,7 +547,7 @@ class $modify(IPGarageLayer, GJGarageLayer){
                         if (p2Icon){
                             p2Icon->m_outlineSprite->setVisible(false);
                         } else {
-                            geode::log::debug("p2 icon not found! on glow enabled, something went wrong");
+                            geode::log::warn("p2 icon not found! glow enabled, something went wrong");
                         }
                     }
                 } else {
@@ -546,15 +555,10 @@ class $modify(IPGarageLayer, GJGarageLayer){
                     if (p2Icon) {
                         p2Icon->m_outlineSprite->setVisible(dualHasGlow);
                     } else {
-                        geode::log::debug("p2 icon not found! on glow disabled, something went wrong");
+                        geode::log::warn("p2 icon not found! glow disabled, something went wrong");
                     }
                 }
 
-                if (lastDualMode == 8) {
-                    fields->m_dualGlowDisplay->setScale(1.5f);
-                } else {
-                    fields->m_dualGlowDisplay->setScale(1.6f);
-                }
             }
 
         }
@@ -579,6 +583,9 @@ class $modify(IPGarageLayer, GJGarageLayer){
         float jetpackPosX = m_playerObject->getPositionX() + 9.f;
         float jetpackPosY = m_playerObject->getPositionY() + 6.f;
         float jetpackScale = 0.9f;
+
+        float winCenterX = winSize.width / 2;
+        float player1PosWhenDualIcons = winCenterX - winSize.width / 12;
 
         // dual icons stuff
         bool isSeparateLoaded = Loader::get()->isModLoaded("weebify.separate_dual_icons");
@@ -678,7 +685,7 @@ class $modify(IPGarageLayer, GJGarageLayer){
             lastDualMode = SDL->getSavedValue<int64_t>("lastmode");
 
             p2Icon = static_cast<SimplePlayer*>(this->getChildByID("player2-icon"));
-            dualPosX = m_playerObject->getPositionX() + winSize.width / 6;
+            dualPosX = player1PosWhenDualIcons + winSize.width / 6;
             dualPosY = m_playerObject->getPositionY();
             dualShipPosY = m_playerObject->getPositionY() + 16.f;
             dualUfoPosY = m_playerObject->getPositionY() + 8.5f;

@@ -158,7 +158,7 @@ class $modify(IPGarageLayer, GJGarageLayer){
 
     static void onModify(auto& self) {
         (void) self.setHookPriorityBeforePre("GJGarageLayer::onSelect", "hiimjustin000.more_icons");
-        (bool) self.setHookPriorityAfterPre("GJGarageLayer::init", "weebify.separate_dual_icons");
+        //(bool) self.setHookPriorityAfterPre("GJGarageLayer::init", "weebify.separate_dual_icons");
     }
 
     void onReloadButton(CCObject* sender) {
@@ -279,6 +279,8 @@ class $modify(IPGarageLayer, GJGarageLayer){
         float jPosX = m_playerObject->getPositionX() + 9.f;
         float jPosY = m_playerObject->getPositionY() + 6.f;
 
+        auto winSize = CCDirector::sharedDirector()->getWinSize();
+
         // dual icons stuff
         bool isSeparateLoaded = Loader::get()->isModLoaded("weebify.separate_dual_icons");
         auto SDL = Loader::get()->getLoadedMod("weebify.separate_dual_icons");
@@ -359,12 +361,12 @@ class $modify(IPGarageLayer, GJGarageLayer){
             lastDualMode = SDL->getSavedValue<int64_t>("lastmode");
 
             SimplePlayer* p2Icon = as<SimplePlayer*>(this->getChildByID("player2-icon"));
-            dualPosX = p2Icon->getPositionX();
-            dualPosY = p2Icon->getPositionY();
-            dualShipPosY = p2Icon->getPositionY() + 16.f;
-            dualUfoPosY = p2Icon->getPositionY() + 8.5f;
-            dualJetpackPosX = p2Icon->getPositionX() + 9.f;
-            dualJetpackPosY = p2Icon->getPositionY() + 6.f;
+            dualPosX = m_playerObject->getPositionX() + winSize.width / 6;
+            dualPosY = m_playerObject->getPositionY();
+            dualShipPosY = m_playerObject->getPositionY() + 16.f;
+            dualUfoPosY = m_playerObject->getPositionY() + 8.5f;
+            dualJetpackPosX = dualPosX + 9.f;
+            dualJetpackPosY = m_playerObject->getPositionY() + 6.f;
             dualHasGlow = SDL->getSavedValue<bool>("glow");
 
             if (lastDualMode == 1 || lastDualMode == 3 || lastDualMode == 8) {
@@ -376,15 +378,12 @@ class $modify(IPGarageLayer, GJGarageLayer){
             if (lastDualMode == 1) { // SHIP
                 fields->m_dualPreview->setPosition({dualPosX, dualShipPosY});
                 fields->m_dualPreview->setScale(0.88f);
-                p2Icon->setScale(1.6f);
             } else if (lastDualMode == 3) { // UFO
                 fields->m_dualPreview->setPosition({dualPosX, dualUfoPosY});
                 fields->m_dualPreview->setScale(0.88f);
-                p2Icon->setScale(1.6f);
             } else if (lastDualMode == 8) { // JETPACK
                 fields->m_dualPreview->setPosition({dualJetpackPosX, dualJetpackPosY});
-                fields->m_dualPreview->setScale(0.9f);
-                p2Icon->setScale(1.5f);
+                fields->m_dualPreview->setScale(0.96f);
             } else {
                 fields->m_dualPreview->setPosition({dualPosX, dualPosY + 20.f});
             }
@@ -404,7 +403,7 @@ class $modify(IPGarageLayer, GJGarageLayer){
                     IconPreview::updateDualBirdGlow(fields->m_dualGlowDisplay);
 
                 } else if (lastDualMode == 8) {
-                    fields->m_dualGlowDisplay->setScale(1.5f);
+                    fields->m_dualGlowDisplay->setScale(1.6f);
                     IconPreview::updateDualJetpackGlow(fields->m_dualGlowDisplay);
                 }
 
@@ -417,7 +416,11 @@ class $modify(IPGarageLayer, GJGarageLayer){
                     if (dualHasGlow) {
                         fields->m_dualGlowDisplay->setVisible(true);
                         fields->m_dualGlowDisplay->m_outlineSprite->setVisible(true);
-                        p2Icon->m_outlineSprite->setVisible(false);
+                        if (p2Icon){
+                            p2Icon->m_outlineSprite->setVisible(false);
+                        } else {
+                            geode::log::debug("p2 icon not found! on glow enabled, something went wrong");
+                        }
                     } else {
                         fields->m_dualGlowDisplay->setVisible(false);
                     }
@@ -563,6 +566,7 @@ class $modify(IPGarageLayer, GJGarageLayer){
 
         auto fields = m_fields.self();
         auto manager = GameManager::sharedState();
+        auto winSize = CCDirector::sharedDirector()->getWinSize();
 
         auto lastIcon = manager->m_playerIconType;
         bool dontHideOnSpecials = m_selectedIconType == IconType::Special || m_selectedIconType == IconType::DeathEffect || m_selectedIconType == IconType::ShipFire;
@@ -674,12 +678,12 @@ class $modify(IPGarageLayer, GJGarageLayer){
             lastDualMode = SDL->getSavedValue<int64_t>("lastmode");
 
             p2Icon = static_cast<SimplePlayer*>(this->getChildByID("player2-icon"));
-            dualPosX = p2Icon->getPositionX();
-            dualPosY = p2Icon->getPositionY();
-            dualShipPosY = p2Icon->getPositionY() + 16.f;
-            dualUfoPosY = p2Icon->getPositionY() + 8.5f;
-            dualJetpackPosX = p2Icon->getPositionX() + 9.f;
-            dualJetpackPosY = p2Icon->getPositionY() + 6.f;
+            dualPosX = m_playerObject->getPositionX() + winSize.width / 6;
+            dualPosY = m_playerObject->getPositionY();
+            dualShipPosY = m_playerObject->getPositionY() + 16.f;
+            dualUfoPosY = m_playerObject->getPositionY() + 8.5f;
+            dualJetpackPosX = dualPosX + 9.f;
+            dualJetpackPosY = m_playerObject->getPositionY() + 6.f;
             dualHasGlow = SDL->getSavedValue<bool>("glow");
 
             IconPreview::updateDualPreviewCube(fields->m_dualPreview);
@@ -745,7 +749,6 @@ class $modify(IPGarageLayer, GJGarageLayer){
             }
 
         }
-
 
     }
     

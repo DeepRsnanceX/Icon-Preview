@@ -158,7 +158,7 @@ class $modify(IPGarageLayer, GJGarageLayer){
 
     static void onModify(auto& self) {
         (void) self.setHookPriorityBeforePre("GJGarageLayer::onSelect", "hiimjustin000.more_icons");
-        (bool) self.setHookPriorityAfterPost("GJGarageLayer::init", "weebify.separate_dual_icons");
+        (bool) self.setHookPriorityPost("GJGarageLayer::init", Priority::Last);
     }
 
     void onReloadButton(CCObject* sender) {
@@ -231,7 +231,7 @@ class $modify(IPGarageLayer, GJGarageLayer){
                     IconPreview::updateDualBirdGlow(fields->m_dualGlowDisplay);
 
                 } else if (lastDualMode == 8) {
-                    fields->m_dualGlowDisplay->setScale(1.5f);
+                    fields->m_dualGlowDisplay->setScale(p2Icon->getScale());;
                     IconPreview::updateDualJetpackGlow(fields->m_dualGlowDisplay);
                 }
 
@@ -255,11 +255,6 @@ class $modify(IPGarageLayer, GJGarageLayer){
                     }
                 }
 
-                if (lastDualMode == 8) {
-                    fields->m_dualGlowDisplay->setScale(1.5f);
-                } else {
-                    fields->m_dualGlowDisplay->setScale(1.6f);
-                }
             }
         }
 

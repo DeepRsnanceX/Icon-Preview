@@ -1,5 +1,5 @@
 {
-	"geode": "4.5.0",
+	"geode": "4.6.2",
 	"gd": {
 		"win": "2.2074",
 		"android": "2.2074",
@@ -17,12 +17,12 @@
 			"type": "bool",
 			"name": "Reload Button (Read Info!)",
 			"default": false,
-			"description": "Adds a button to the garage to reload the icon preview. This is added for compatibility with the **Separate Dual Icons** mod, meant to be used ***<cy>after switching P1-P2 icon sets.</c>*** \n\n <cr>Not the best possible way to make compatibility, i know, but i'm not bothering with finding a better one.</c>"
+			"description": "Adds a button to the garage to reload the icon preview. This is added for compatibility with the **Separate Dual Icons** mod, meant to be used ***<cy>after switching P1-P2 icon sets.</c>*** \n<cg>This is here for convenience</c>, however if you don't wish to add yet another button to your garage, icon previews are reloaded on icon change, so you don't need to re-enter the garage for them to be updated. \n\n <cr>Not the best possible way to make compatibility, i know, but i'm not bothering with finding a better one for now. Sorry</c> \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n <c-808080>Contributions are welcome ..... ;))))))))))</c>"
 		}
 	},
 	"dependencies": {
         "hiimjustin000.more_icons": {
-            "version": ">=v1.13.0",
+            "version": ">=v1.14.0",
             "importance": "suggested"
         }
     },

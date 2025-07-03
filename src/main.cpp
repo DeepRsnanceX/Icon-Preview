@@ -158,7 +158,7 @@ class $modify(IPGarageLayer, GJGarageLayer){
 
     static void onModify(auto& self) {
         (void) self.setHookPriorityBeforePre("GJGarageLayer::onSelect", "hiimjustin000.more_icons");
-        (void) self.setHookPriorityBeforePre("GJGarageLayer::updatePlayerColors", "weebify.separate_dual_icons");
+        (bool) self.setHookPriorityAfterPost("GJGarageLayer::init", "weebify.separate_dual_icons");
     }
 
     void onReloadButton(CCObject* sender) {
@@ -273,15 +273,15 @@ class $modify(IPGarageLayer, GJGarageLayer){
         auto lastSelectedIcon = gameManager->m_playerIconType;
         auto winSize = CCDirector::sharedDirector()->getWinSize();
 
+        float screenCenterX = winSize.width / 2;
+        float player1PosWhenDualIcons = screenCenterX - winSize.width / 12;
+
         float posX = m_playerObject->getPositionX();
         float posY = m_playerObject->getPositionY();
         float sPosY = m_playerObject->getPositionY() + 16.f;
         float uPosY = m_playerObject->getPositionY() + 8.5f;
         float jPosX = m_playerObject->getPositionX() + 9.f;
         float jPosY = m_playerObject->getPositionY() + 6.f;
-
-        float screenCenterX = winSize.width / 2;
-        float player1PosWhenDualIcons = screenCenterX - winSize.width / 12;
 
         // dual icons stuff
         bool isSeparateLoaded = Loader::get()->isModLoaded("weebify.separate_dual_icons");
@@ -371,8 +371,14 @@ class $modify(IPGarageLayer, GJGarageLayer){
             dualJetpackPosY = m_playerObject->getPositionY() + 6.f;
             dualHasGlow = SDL->getSavedValue<bool>("glow");
 
-            fields->m_previewPlayer->setPositionX(player1PosWhenDualIcons);
             fields->fakeGlowDisplay->setPositionX(player1PosWhenDualIcons);
+
+            if (lastSelectedIcon == IconType::Jetpack) {
+                fields->m_previewPlayer->setPositionX(player1PosWhenDualIcons + 9.f);
+                fields->m_previewPlayer->setScale(0.9f);
+            } else {
+                fields->m_previewPlayer->setPositionX(player1PosWhenDualIcons);
+            }
 
             if (lastDualMode == 1 || lastDualMode == 3 || lastDualMode == 8) {
                 fields->m_dualPreview->setVisible(true);

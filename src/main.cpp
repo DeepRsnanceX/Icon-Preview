@@ -158,7 +158,7 @@ class $modify(IPGarageLayer, GJGarageLayer){
 
     static void onModify(auto& self) {
         (void) self.setHookPriorityBeforePre("GJGarageLayer::onSelect", "hiimjustin000.more_icons");
-        (bool) self.setHookPriorityPost("GJGarageLayer::init", Priority::Last);
+        (bool) self.setHookPriorityAfterPost("GJGarageLayer::init", "weebify.separate_dual_icons");
     }
 
     void onReloadButton(CCObject* sender) {

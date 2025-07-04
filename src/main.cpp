@@ -291,6 +291,8 @@ class $modify(IPGarageLayer, GJGarageLayer){
         bool dualHasGlow = false;
 
         if (enableReloadBtn) {
+            auto lock = this->getChildByID("username-lock");
+
             auto spr = CircleButtonSprite::createWithSprite("reload.png"_spr, 1.25f, CircleBaseColor::Green, CircleBaseSize::Small);
             auto reloadButton = CCMenuItemSpriteExtra::create(
                 spr,
@@ -299,8 +301,23 @@ class $modify(IPGarageLayer, GJGarageLayer){
             );
             reloadButton->setID("reload-button"_spr);
 
-            auto sexito = as<CCMenu*>(this->getChildByID("shards-menu"));
-            sexito->addChild(reloadButton);
+            auto menu = CCMenu::create();
+            menu->setLayout(
+                ColumnLayout::create()
+                    ->setGap(4.f)
+                    ->setAxisAlignment(AxisAlignment::End)
+                    ->setAxisReverse(true)
+                    ->setCrossAxisOverflow(false)
+            );
+
+            this->addChild(menu);
+
+            menu->setContentSize(reloadButton->getContentSize());
+            menu->addChild(reloadButton);
+            menu->setPosition({lock->getPositionX() + 23.f, lock->getPositionY()});
+            menu->setScale(0.6f);
+
+            reloadButton->setPosition({menu->getContentSize().width / 2, menu->getContentSize().height / 2});
         }
 
         if (lastSelectedIcon == IconType::Ship || lastSelectedIcon == IconType::Ufo || lastSelectedIcon == IconType::Jetpack) {
